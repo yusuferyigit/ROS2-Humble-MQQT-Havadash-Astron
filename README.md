@@ -37,7 +37,7 @@ Proje, temel isterlerin ötesinde şu gelişmiş güvenlik ve fiziksel simülasy
 
 Projenin inşa edilmesi ve başlatılması için sadece **Git** ve **Docker/Docker Compose** gereklidir.
 
-### 1. Ön Koşul Kurulumları (Ubuntu 22.04 - Eğer Kurulu Değilse)
+### Kurulumlar (Ubuntu 22.04 - Eğer Kurulu Değilse)
 
 ```bash
 # A. Git ve Temel Araçlar
@@ -53,3 +53,35 @@ sudo apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y
 
 # C. Kullanıcı Yetkilendirme (Oturumu kapatıp açmayı unutmayın!)
 sudo usermod -aG docker $USER
+
+2. Projenin Başlatılması
+Bash
+
+# A. Repo'yu Klonlayın
+git clone https://github.com/yusuferyigit/ROS2-Humble-MQQT-Havadash-Astron.git
+cd ROS2-Humble-MQQT-Havadash-Astron
+
+# B. Sistemi İnşa Et ve Başlat
+# Bu komut ROS 2 imajını indirir, kodu derler ve sistemi ayağa kaldırır.
+docker compose up --build
+
+3. Test Komutları ve İzleme
+
+Sistemin çalıştığını doğrulamak için farklı bir terminal kullanın.
+
+    Veriyi İzleme (Havadash Backend View):
+    Bash
+
+docker run --rm eclipse-mosquitto mosquitto_sub -h test.mosquitto.org -t "havadash/telemetry/#"
+
+Örnek Komut Gönderimi (Hızlanma Testi):
+    # KALKIŞ EMRİ
+    mosquitto_pub -h test.mosquitto.org -t "havadash/commands/drone-01" -m '{"command_id": "TEST-01", "type": "TAKEOFF", "params": {}, "issued_at": "2025-12-02T17:00:00Z"}'
+
+    # İNİŞ EMRİ
+    mosquitto_pub -h test.mosquitto.org -t "havadash/commands/drone-01" -m '{"command_id": "TEST-02", "type": "LAND", "params": {}, "issued_at": "2025-12-02T17:01:00Z"}'
+
+    Fail-Safe Testi (Sensör Kesintisi): Docker terminalinde sensor_sim sürecini durdurursanız, 3 saniye sonra ERROR statüsünün yayınlandığını görebilirsiniz.
+
+4. Durdurma
+docker compose down
