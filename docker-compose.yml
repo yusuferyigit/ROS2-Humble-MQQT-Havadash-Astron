@@ -1,0 +1,13 @@
+
+services:
+  havadash-drone:
+    # Dockerfile'ı bu klasörden inşa et
+    build: .
+    container_name: havadash_drone_instance
+    # Ortam değişkenleri, entrypoint.sh scriptine aktarılır
+    environment:
+      # Görev Tanımı 4'e uygun olarak parametrik ID ve Broker [cite: 55]
+      - DRONE_ID=docker-drone-01
+      - MQTT_BROKER=test.mosquitto.org
+    # Konteyner durursa yeniden başlatma (manuel durdurulana kadar)
+    restart: unless-stopped

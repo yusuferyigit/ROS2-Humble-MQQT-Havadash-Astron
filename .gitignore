@@ -1,0 +1,11 @@
+# ROS / COLCON tarafından üretilen gereksiz dosyalar
+build/
+install/
+log/
+
+# macOS tarafından üretilen metadata
+.DS_Store
+
+# Python geçici dosyaları
+*.pyc
+__pycache__/
