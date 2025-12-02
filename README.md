@@ -1,4 +1,4 @@
-ROS 2 – MQTT Bridge (Dockerized Sanal Drone Companion)
+#ROS 2 – MQTT Bridge (Dockerized Sanal Drone Companion)
 
 Bu proje, Havadash Firmware Mühendisliği Challenge kapsamında bir sanal drone companion yazılımının ROS 2 üzerinde simülasyonunu sağlar. Sistem Docker üzerinde çalışır ve MQTT aracılığıyla telemetri iletimi ve komut alma işlevlerini yerine getirir.
 1. Sistem Mimarisi ve Veri Akışı
