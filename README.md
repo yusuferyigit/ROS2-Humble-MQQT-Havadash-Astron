@@ -54,3 +54,12 @@ sudo apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y
 # C. Kullanıcıyı Docker Grubuna Ekle (Yetkiyi çözer)
 sudo usermod -aG docker $USER
 # UYARI: Yetkinin aktifleşmesi için oturumu kapatıp yeniden açın (Log Out / Log In).
+
+
+## 2. Projenin Başlatılması
+
+### A. Repo'yu Klonlayın
+```bash
+git clone https://github.com/yusuferyigit/ROS2-Humble-MQQT-Havadash-Astron.git
+cd ROS2-Humble-MQQT-Havadash-Astron
+
