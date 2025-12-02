@@ -6,7 +6,7 @@ Bu proje, Havadash Firmware Mühendisliği Challenge kapsamında bir sanal drone
 
 ## I. Sistem Mimarisi ve Veri Akışı 
 
-Sistem, ROS 2'nin **Tek Sorumluluk Prensibi (SRP)** gerekliliğine uygun olarak, tek bir paket içinde iki ayrı Node ile tasarlanmıştır.
+Sistem, ROS 2'nin **Single Responsibility Principle  (SRP)** gerekliliğine uygun olarak, tek bir paket içinde iki ayrı Node ile tasarlanmıştır.
 
 ### A. Mimari Yapı
 
@@ -17,8 +17,8 @@ Sistem, ROS 2'nin **Tek Sorumluluk Prensibi (SRP)** gerekliliğine uygun olarak,
 
 ### B. Veri Güvenliği ve Protokoller
 
-* [cite_start]**Telemetri Formatı:** Veri, Havadash Backend'inin beklediği JSON yapısına (ISO8601 zaman damgalı, lat/lon/alt, speed, battery, status [cite: 19-30]) dönüştürülür.
-* [cite_start]**Komut Akışı:** Gelen komutlar (B. Komut Payload [cite: 31-38][cite_start]) işlenir ve `ACCEPTED` veya `REJECTED` durumunda C. Komut ACK Payload [cite: 39-46] ile geri dönülür.
+* **Telemetri Formatı:** Veri, Havadash Backend'inin beklediği JSON yapısına (ISO8601 zaman damgalı, lat/lon/alt, speed, battery, status dönüştürülür.
+* **Komut Akışı:** Gelen komutlar (B. Komut Payload işlenir ve `ACCEPTED` veya `REJECTED` durumunda C. Komut ACK Payload ile geri dönülür.
 * **Parametrik Konfigürasyon:** `DRONE_ID` ve `MQTT_BROKER` adresleri, `docker-compose.yml` üzerinden dışarıdan yönetilir (ROS Parameters).
 
 ---
