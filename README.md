@@ -30,25 +30,17 @@ III. Kurulum ve Çalıştırma Talimatları (Havadash Ekibi İçin)
 
 Projenin inşa edilmesi ve başlatılması için sadece Git ve Docker/Docker Compose gereklidir.
 
-    Repo'yu Klonlayın:
-    Bash
-
+Repo'yu Klonlayın:
 git clone https://github.com/yusuferyigit/ROS2-Humble-MQQT-Havadash-Astron.git
 cd ROS2-Humble-MQQT-Havadash-Astron
 
 Sistemi İnşa Et ve Başlat: Bu komut, ROS 2 ortamını kurar, kodu derler ve iki Node'u (sensor_sim ve bridge_node) eş zamanlı başlatır.
-Bash
-
 docker compose up --build
 
 (Varsayılan olarak DRONE_ID=drone-01 kullanılacaktır.)
 
 Veriyi İzleme (Havadash Backend View): Başka bir terminalden telemetri verilerini canlı izleyebilirsiniz:
-Bash
-
 docker run --rm eclipse-mosquitto mosquitto_sub -h test.mosquitto.org -t "havadash/telemetry/#"
 
 Durdurma:
-Bash
-
 docker compose down
