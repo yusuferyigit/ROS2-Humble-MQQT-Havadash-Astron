@@ -55,7 +55,6 @@ sudo apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y
 sudo usermod -aG docker $USER
 
 2. Projenin Başlatılması
-Bash
 
 # A. Repo'yu Klonlayın
 git clone https://github.com/yusuferyigit/ROS2-Humble-MQQT-Havadash-Astron.git
@@ -70,7 +69,6 @@ docker compose up --build
 Sistemin çalıştığını doğrulamak için farklı bir terminal kullanın.
 
     Veriyi İzleme (Havadash Backend View):
-    Bash
 
 docker run --rm eclipse-mosquitto mosquitto_sub -h test.mosquitto.org -t "havadash/telemetry/#"
 
