@@ -1,4 +1,4 @@
-# ROS 2 – MQTT Bridge (Dockerized Sanal Drone Companion)
+# ROS 2 – MQTT Bridge (Dockerized Virtual Drone Companion)
 
 Bu proje, Havadash Firmware Mühendisliği Challenge kapsamında bir sanal drone companion yazılımının **ROS 2** üzerinde simülasyonunu sağlar. Sistem **Docker** üzerinde çalışır ve **MQTT** aracılığıyla telemetri iletimi ve komut alma işlevlerini yerine getirir.
 
@@ -6,7 +6,7 @@ Bu proje, Havadash Firmware Mühendisliği Challenge kapsamında bir sanal drone
 
 ## I. Sistem Mimarisi ve Veri Akışı 
 
-Sistem, ROS 2'nin **Tek Sorumluluk Prensibi (SRP)** gerekliliğine uygun olarak, tek bir paket içinde iki ayrı Node ile tasarlanmıştır.
+Sistem, ROS 2'nin **Single Responsibility Principle (SRP)** gerekliliğine uygun olarak, tek bir paket içinde iki ayrı Node ile tasarlanmıştır.
 
 ### A. Mimari Yapı
 
@@ -23,7 +23,7 @@ Sistem, ROS 2'nin **Tek Sorumluluk Prensibi (SRP)** gerekliliğine uygun olarak,
 
 ---
 
-## II. Güvenlik (Fail-Safe) ve Gelişmiş Mantık
+## II. Güvenlik (Fail-Safe) ve Gelişmiş Simülasyon Mantığı
 
 Proje, temel isterlerin ötesinde şu gelişmiş güvenlik ve fiziksel simülasyon mantığını içerir:
 
@@ -33,30 +33,24 @@ Proje, temel isterlerin ötesinde şu gelişmiş güvenlik ve fiziksel simülasy
 
 ---
 
-## III. Kurulum ve Çalıştırma Talimatları (Havadash Ekibi İçin)
+## III. Kurulum ve Çalıştırma Talimatları
 
 Projenin inşa edilmesi ve başlatılması için sadece **Git** ve **Docker/Docker Compose** gereklidir.
 
-1.  **Repo'yu Klonlayın:**
-    ```bash
-    git clone [https://github.com/yusuferyigit/ROS2-Humble-MQQT-Havadash-Astron.git](https://github.com/yusuferyigit/ROS2-Humble-MQQT-Havadash-Astron.git)
-    cd ROS2-Humble-MQQT-Havadash-Astron
-    ```
+### 1. Ön Koşul Kurulumları (Önceden Kurulmadıysa)
 
-2.  **Sistemi İnşa Et ve Başlat:**
-    Bu komut, ROS 2 ortamını kurar, kodu derler ve iki Node'u (`sensor_sim` ve `bridge_node`) eş zamanlı başlatır.
-    ```bash
-    docker compose up --build
-    ```
-    *(Varsayılan olarak DRONE_ID=docker-drone-01 kullanılacaktır.)*
+```bash
+# A. Git ve Temel Araçları Kur
+sudo apt update
+sudo apt install git curl -y
 
-3.  **Veriyi İzleme (Havadash Backend View):**
-    Başka bir terminalden telemetri verilerini canlı izleyebilirsiniz:
-    ```bash
-    docker run --rm eclipse-mosquitto mosquitto_sub -h test.mosquitto.org -t "havadash/telemetry/#"
-    ```
+# B. Docker Kurulumu (Ubuntu 22.04)
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL [https://download.docker.com/linux/ubuntu/gpg](https://download.docker.com/linux/ubuntu/gpg) | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] [https://download.docker.com/linux/ubuntu](https://download.docker.com/linux/ubuntu) $(. /etc/os-release && echo "$UBUNTU_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt update
+sudo apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y
 
-4.  **Durdurma:**
-    ```bash
-    docker compose down
-    ```
+# C. Kullanıcıyı Docker Grubuna Ekle (Yetkiyi çözer)
+sudo usermod -aG docker $USER
+# UYARI: Yetkinin aktifleşmesi için oturumu kapatıp yeniden açın (Log Out / Log In).
