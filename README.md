@@ -1,85 +1,91 @@
-ROS 2 – MQTT Bridge (Dockerized Virtual Drone Companion)
+# ROS 2 – MQTT Bridge (Dockerized Virtual Drone Companion)
 
-Bu proje, Havadash Firmware Mühendisliği Challenge kapsamında sanal bir drone companion sisteminin ROS 2 üzerinde simülasyonunu sağlar. Sistem tamamen Docker üzerinde çalışır ve MQTT kullanarak telemetri iletimi ve komut işleme görevlerini yerine getirir.
+Bu proje, Havadash Firmware Mühendisliği Challenge kapsamında bir sanal drone companion yazılımının **ROS 2** üzerinde simülasyonunu sağlar. Sistem **Docker** üzerinde çalışır ve **MQTT** aracılığıyla telemetri iletimi ve komut alma işlevlerini yerine getirir.
 
-I. Sistem Mimarisi ve Veri Akışı
+---
 
-Sistem, ROS 2'nin tek sorumluluk prensibine (SRP) uygun olarak tek bir paket içinde iki bağımsız node ile tasarlanmıştır.
+## I. Sistem Mimarisi ve Veri Akışı
 
-1. Mimari Yapı
-Node Adı	Rolü	Açıklama
-sensor_sim_node	Veri Kaynağı / ROS Publisher	Mock GPS, irtifa ve batarya verilerini ROS topic'lerine yayınlar.
-bridge_node	Köprü & Kontrolcü / MQTT Client	ROS verisini dinler, JSON formatına dönüştürerek MQTT'ye iletir; MQTT üzerinden gelen komutları işleyerek drone durumunu günceller.
-2. Veri Güvenliği ve Protokoller
+Sistem, ROS 2'nin **Tek Sorumluluk Prensibi (SRP)** gerekliliğine uygun olarak, tek bir paket içinde iki ayrı Node ile tasarlanmıştır.
 
-Telemetri Formatı: ISO8601 zaman damgası, konum, hız, batarya ve status alanlarıyla Havadash Backend formatına tam uyumludur.
+### A. Mimari Yapı
 
-Komut Akışı: TAKEOFF veya LAND komutları işlenir, sonuç olarak ACCEPTED veya REJECTED içerikli ACK geri gönderilir.
+| Node Adı | Rolü | Görev |
+| :--- | :--- | :--- |
+| **`sensor_sim_node`** | **Veri Kaynağı / ROS Publisher** | Mock (sahte) GPS, İrtifa ve Batarya verilerini ROS topic'lerine basar. |
+| **`bridge_node`** | **Köprü & Kontrolcü / MQTT Client** | ROS topic'lerinden veriyi dinler, JSON'a çevirir, MQTT'ye basar ve Buluttan gelen komutları (LAND/TAKEOFF) dinler. |
 
-Parametrik Konfigürasyon: Drone ID, MQTT broker adresi gibi tüm değişkenler docker-compose.yml üzerinden yönetilir.
+### B. Veri Güvenliği ve Protokoller
 
-II. Güvenlik (Fail-Safe) ve Gelişmiş Simülasyon Mantığı
+* **Telemetri Formatı:** Veri, Havadash Backend'inin beklediği JSON yapısına (ISO8601 zaman damgalı, lat/lon/alt, speed, battery, status) dönüştürülür.
+* **Komut Akışı:** Gelen komutlar (B. Komut Payload) işlenir ve `ACCEPTED` veya `REJECTED` durumunda C. Komut ACK Payload ile geri dönülür.
+* **Parametrik Konfigürasyon:** `DRONE_ID` ve `MQTT_BROKER` adresleri, `docker-compose.yml` üzerinden dışarıdan yönetilir (ROS Parameters).
 
-Bu proje yalnızca temel simülasyon görevlerini değil, gerçek sistem davranışına benzer gelişmiş güvenlik mekanizmalarını da içerir.
+---
 
-Kritik Pil Durumu (Auto-RTL):
-Pil seviyesi %12’nin altına düştüğünde veya MQTT bağlantısı kesildiğinde drone “ERROR” durumuna geçer ve otomatik eve dönüş (RTL) davranışı simüle edilir.
+## II. Güvenlik (Fail-Safe) ve Gelişmiş Simülasyon Mantığı
 
-Veri Kesintisi Koruması:
-Sensör verisi 3 saniyeden uzun süre gelmezse bridge node en son bilinen konumu koruyarak durumu ERROR olarak MQTT'ye raporlar.
+Proje, temel isterlerin ötesinde şu gelişmiş güvenlik ve fiziksel simülasyon mantığını içerir:
 
-Dinamik Hızlanma Modeli:
-TAKEOFF veya LAND komutlarında hız sabit olarak değil, 2.0 m/s ivme ile kademeli olarak değişir. Maksimum hız: 16.0 m/s.
+1.  **Hata Durumunda Eve Dönüş (RTL):** Pil seviyesi kritik seviyeye (%12) düştüğünde veya MQTT bağlantısı koptuğunda, drone otomatik olarak `status: "ERROR"` moduna geçer ve **başlangıç noktasına geri dönüşü** (RTL) simüle eder.
+2.  **Veri Kesintisi Koruması:** ROS topic'lerinden 3 saniyeden fazla veri gelmezse (sensör kesintisi), Bridge Node, MQTT'ye en son bilinen konumu ve `status: "ERROR"` bilgisini basar (sessiz kalmak yerine sorunu raporlar).
+3.  **Dinamik Hızlanma Modeli:** Komut alındığında (TAKEOFF/LAND), hız anlık olarak değişmez; `2.0m/s` ivme ile yavaşça hızlanır/yavaşlar (Maksimum hız: `16.0m/s`).
 
-III. Kurulum ve Çalıştırma Talimatları
+---
 
-Projeyi çalıştırmak için Git ve Docker/Docker Compose kurulumu yeterlidir.
+## III. Kurulum ve Çalıştırma Talimatları
 
-1. Ön Koşul Kurulumları (Ubuntu 22.04)
-# Git ve temel araçlar
+Projenin inşa edilmesi ve başlatılması için sadece **Git** ve **Docker/Docker Compose** gereklidir.
+
+### 1. Ön Koşul Kurulumları (Ubuntu 22.04 - Eğer Kurulu Değilse)
+
+```bash
+# A. Git ve Temel Araçlar
 sudo apt update && sudo apt install git curl -y
 
-# Docker kurulumu
+# B. Docker Kurulumu
 sudo install -m 0755 -d /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 sudo chmod a+r /etc/apt/keyrings/docker.gpg
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
-https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$UBUNTU_CODENAME") stable" \
-| sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$UBUNTU_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt update
 sudo apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y
 
-# Kullanıcı yetkilendirme
+# C. Kullanıcı Yetkilendirme (Oturumu kapatıp açmayı unutmayın!)
 sudo usermod -aG docker $USER
 
-IV. Projenin Çalıştırılması
-1. Repo'nun Klonlanması
+2. Projenin Başlatılması
+Bash
+
+# A. Repo'yu Klonlayın
 git clone https://github.com/yusuferyigit/ROS2-Humble-MQQT-Havadash-Astron.git
 cd ROS2-Humble-MQQT-Havadash-Astron
 
-2. Sistemin İnşa Edilmesi ve Başlatılması
+# B. Sistemi İnşa Et ve Başlat
+# Bu komut ROS 2 imajını indirir, kodu derler ve sistemi ayağa kaldırır.
 docker compose up --build
 
-V. Telemetri İzleme ve Komut Gönderme
-1. Telemetri İzleme
-docker run --rm eclipse-mosquitto mosquitto_sub \
-  -h test.mosquitto.org -t "havadash/telemetry/#"
+3. Test Komutları ve İzleme
 
-2. Örnek Komut Gönderimleri
+Sistemin çalıştığını doğrulamak için farklı bir terminal kullanın.
 
-Kalkış (TAKEOFF):
+    Veriyi İzleme (Havadash Backend View):
+    Bash
 
-mosquitto_pub -h test.mosquitto.org \
-  -t "havadash/commands/docker-drone-01" \
-  -m '{"command_id": "TEST-01", "type": "TAKEOFF", "params": {}, "issued_at": "2025-12-02T17:00:00Z"}'
+docker run --rm eclipse-mosquitto mosquitto_sub -h test.mosquitto.org -t "havadash/telemetry/#"
 
+Örnek Komut Gönderimi (Hızlanma Testi):
+Bash
 
-İniş (LAND):
+    # KALKIŞ EMRİ
+    mosquitto_pub -h test.mosquitto.org -t "havadash/commands/docker-drone-01" -m '{"command_id": "TEST-01", "type": "TAKEOFF", "params": {}, "issued_at": "2025-12-02T17:00:00Z"}'
 
-mosquitto_pub -h test.mosquitto.org \
-  -t "havadash/commands/docker-drone-01" \
-  -m '{"command_id": "TEST-02", "type": "LAND", "params": {}, "issued_at": "2025-12-02T17:01:00Z"}'
+    # İNİŞ EMRİ
+    mosquitto_pub -h test.mosquitto.org -t "havadash/commands/docker-drone-01" -m '{"command_id": "TEST-02", "type": "LAND", "params": {}, "issued_at": "2025-12-02T17:01:00Z"}'
 
-VI. Sistemi Durdurma
+    Fail-Safe Testi (Sensör Kesintisi): Docker terminalinde sensor_sim sürecini durdurursanız, 3 saniye sonra ERROR statüsünün yayınlandığını görebilirsiniz.
+
+4. Durdurma
+Bash
+
 docker compose down
