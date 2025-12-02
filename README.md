@@ -1,4 +1,4 @@
-# ROS 2 – MQTT Bridge (Dockerized Sanal Drone Companion)
+# ROS 2 – MQTT Bridge (Dockerized Virtual Drone Companion)
 
 Bu proje, Havadash Firmware Mühendisliği Challenge kapsamında bir sanal drone companion yazılımının **ROS 2** üzerinde simülasyonunu sağlar. Sistem **Docker** üzerinde çalışır ve **MQTT** aracılığıyla telemetri iletimi ve komut alma işlevlerini yerine getirir.
 
@@ -23,7 +23,7 @@ Sistem, ROS 2'nin **Tek Sorumluluk Prensibi (SRP)** gerekliliğine uygun olarak,
 
 ---
 
-## II. Güvenlik (Fail-Safe) ve Gelişmiş Mantık
+## II. Güvenlik (Fail-Safe)
 
 Proje, temel isterlerin ötesinde şu gelişmiş güvenlik ve fiziksel simülasyon mantığını içerir:
 
@@ -33,7 +33,7 @@ Proje, temel isterlerin ötesinde şu gelişmiş güvenlik ve fiziksel simülasy
 
 ---
 
-## III. Kurulum ve Çalıştırma Talimatları (Havadash Ekibi İçin)
+## III. Kurulum ve Çalıştırma Talimatları
 
 Projenin inşa edilmesi ve başlatılması için sadece **Git** ve **Docker/Docker Compose** gereklidir.
 
