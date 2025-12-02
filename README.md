@@ -39,7 +39,7 @@ Projenin inşa edilmesi ve başlatılması için sadece **Git** ve **Docker/Dock
 
 1.  **Repo'yu Klonlayın:**
     ```bash
-    git clone [https://github.com/yusuferyigit/ROS2-Humble-MQQT-Havadash-Astron.git](https://github.com/yusuferyigit/ROS2-Humble-MQQT-Havadash-Astron.git)
+    git clone https://github.com/yusuferyigit/ROS2-Humble-MQQT-Havadash-Astron.git
     cd ROS2-Humble-MQQT-Havadash-Astron
     ```
 
@@ -48,7 +48,7 @@ Projenin inşa edilmesi ve başlatılması için sadece **Git** ve **Docker/Dock
     ```bash
     docker compose up --build
     ```
-    *(Varsayılan olarak DRONE_ID=docker-drone-01 kullanılacaktır.)*
+    *(Varsayılan olarak DRONE_ID=drone-01 kullanılacaktır.)*
 
 3.  **Veriyi İzleme (Havadash Backend View):**
     Başka bir terminalden telemetri verilerini canlı izleyebilirsiniz:
