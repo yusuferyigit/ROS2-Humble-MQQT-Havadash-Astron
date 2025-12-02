@@ -21,7 +21,7 @@ Bash
 # Terminalden örnek komut gönderme
 mosquitto_pub -h test.mosquitto.org -t "havadash/commands/drone-01" -m '{
   "command_id": "cmd-takeoff-001",
-  "type": "TAKEOFF",
+  "type": "LAND",
   "params": {},
   "issued_at": "2025-12-02T16:55:00Z"
 }'
