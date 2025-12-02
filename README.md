@@ -6,7 +6,7 @@ Bu proje, Havadash Firmware Mühendisliği Challenge kapsamında bir sanal drone
 
 ## I. Sistem Mimarisi ve Veri Akışı
 
-Sistem, ROS 2'nin **Tek Sorumluluk Prensibi (SRP)** gerekliliğine uygun olarak, tek bir paket içinde iki ayrı Node ile tasarlanmıştır.
+Sistem, ROS 2'nin **Single Responsibility Principle (SRP)** gerekliliğine uygun olarak, tek bir paket içinde iki ayrı Node ile tasarlanmıştır.
 
 ### A. Mimari Yapı
 
